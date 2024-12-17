@@ -1,10 +1,21 @@
 package com.SantaFe_BackEnd.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import com.SantaFe_BackEnd.auth.SimpleGrantedAuthorityJsonCreator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -39,13 +50,26 @@ public class JwtValidationFilter extends BasicAuthenticationFilter{
             .parseSignedClaims(token)
             .getPayload();
             String username = claims.getSubject();
-            String username2 = (String) claims.get("username");
+            // String username2 = (String) claims.get("username");
             Object authoritiesClaims = claims.get("authorities");
 
-            UsernamePasswordAuthenticationToken authenticationToken
+            Collection<? extends GrantedAuthority> roles = Arrays.asList(new ObjectMapper()
+                .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityJsonCreator.class) //reemplazar la clase original con una nueva
+                .readValue(authoritiesClaims.toString().getBytes(), SimpleGrantedAuthority[].class)) ;
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null ,roles);
+
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            chain.doFilter(request, response);
 
         } catch (Exception e) {
-           
+           Map<String, String> body = new HashMap<>();
+           body.put("error",e.getMessage());
+           body.put("message", "El token es inválido");
+
+           response.getWriter().write(new ObjectMapper().writeValueAsString(body)); //convertir el response a un json
+           response.setStatus(401);
+           response.setContentType(CONTENT_TYPE);
         }
     }
 
