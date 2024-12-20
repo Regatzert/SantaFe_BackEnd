@@ -41,5 +41,10 @@ public class ProductServiceImpl implements ProductService{
         productRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> findByNameContainingIgnoreCase(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name);
+    }
 
 }
