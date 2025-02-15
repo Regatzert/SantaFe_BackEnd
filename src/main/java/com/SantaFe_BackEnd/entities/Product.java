@@ -1,5 +1,7 @@
 package com.SantaFe_BackEnd.entities;
 
+import java.sql.Timestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,10 +14,16 @@ import lombok.Setter;
 @Table(name = "products")
 @Getter
 @Setter
+
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private String categorio;
+    private String descripcion;
+    private Integer stock;
+    private Double precio;    
+    private String imagen_rrl;
+    private Timestamp fechaCreacion;
+    private Boolean estado;
 }

@@ -7,7 +7,7 @@ import com.SantaFe_BackEnd.entities.Product;
 
 public interface ProductService {
 
-    public List<Product> findAll();
+    List<Product> findAll();
 
     Optional<Product> findById(Long id);
 

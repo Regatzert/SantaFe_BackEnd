@@ -9,5 +9,5 @@ import com.SantaFe_BackEnd.entities.Product;
 
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long>{
-    List<Product> findByNameContainingIgnoreCase(String name);
+    // List<Product> findByNameContainingIgnoreCase(String name);
 }

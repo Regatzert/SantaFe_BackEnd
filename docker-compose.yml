@@ -1,0 +1,34 @@
+version: '3.8'  # Versión de Docker Compose
+
+services:  # Definimos los servicios (contenedores)
+  postgres-db:  # Nombre del servicio para PostgreSQL
+    image: postgres:15  # Imagen oficial de PostgreSQL versión 15
+    container_name: postgres-db  # Nombre del contenedor
+    restart: always  # Reinicia automáticamente si se cae
+    environment:  # Variables de entorno (configuración de PostgreSQL)
+      POSTGRES_USER: kevDev  # Usuario de la base de datos
+      POSTGRES_PASSWORD: $@nt@F3K3vD3v$  # Contraseña
+      POSTGRES_DB: db_SantaFe  # Nombre de la base de datos
+    ports:
+      - "5432:5432"  # Expone PostgreSQL en el puerto 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Guarda los datos aunque el contenedor se detenga
+    networks:
+      - backend  # Lo conecta a la red "backend"
+
+volumes:
+  postgres_data:  # Crea un volumen para almacenar los datos de PostgreSQL
+
+networks:
+  backend:  # Red para que los servicios puedan comunicarse entre sí
+    build:
+        context: ./backend  # Carpeta donde está el Dockerfile
+        dockerfile: Dockerfile
+      container_name: backend-cafe
+      restart: always
+      depends_on:
+        - postgres-db  # Asegura que PostgreSQL inicie primero
+      ports:
+        - "8080:8080"  # Expone Spring Boot en el puerto 8080
+      networks:
+        - backend  # Lo conecta a la misma red que PostgreSQL

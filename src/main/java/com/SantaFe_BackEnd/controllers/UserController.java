@@ -69,8 +69,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
-    
-    
     @PutMapping("path/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody UserRequest user, BindingResult result, @PathVariable Long id) {
         if(result.hasErrors()){
@@ -92,7 +90,6 @@ public class UserController {
         }
         return ResponseEntity.noContent().build();
     }
-
 
     private ResponseEntity<?> validation(BindingResult result) {
         Map<String,String> errors = new HashMap<>();

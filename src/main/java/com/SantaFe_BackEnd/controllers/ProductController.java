@@ -14,11 +14,11 @@ import com.SantaFe_BackEnd.services.ProductService;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-    @Autowired
-    private ProductService productService;
+    // @Autowired
+    // private ProductService productService;
 
-    @GetMapping("/search")
-    public List<Product> searchProducts(@RequestParam("query") String query) {
-        return productService.findByNameContainingIgnoreCase(query);
-    }
+    // @GetMapping("/search")
+    // public List<Product> searchProducts(@RequestParam("query") String query) {
+    //     return productService.findByNameContainingIgnoreCase(query);
+    // }
 }
