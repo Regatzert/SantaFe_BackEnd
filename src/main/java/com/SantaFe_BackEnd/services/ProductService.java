@@ -1,19 +1,26 @@
 package com.SantaFe_BackEnd.services;
 
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.stereotype.Service;
 
 import com.SantaFe_BackEnd.entities.Product;
+import com.SantaFe_BackEnd.repositories.ProductRepository;
 
-public interface ProductService {
+@Service
+public class ProductService {
 
-    List<Product> findAll();
+     private final ProductRepository productRepository;
 
-    Optional<Product> findById(Long id);
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
-    Product save(Product product);
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
 
-    void deleteById(Long id);
-
-    List<Product> findByNameContainingIgnoreCase(String name);
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 }

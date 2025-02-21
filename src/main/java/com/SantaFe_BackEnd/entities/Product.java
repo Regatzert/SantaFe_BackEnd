@@ -1,19 +1,20 @@
 package com.SantaFe_BackEnd.entities;
 
-import java.sql.Timestamp;
+// import java.sql.Timestamp;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "products")
-@Getter
-@Setter
+@Getter@Setter@AllArgsConstructor @NoArgsConstructor
 
 public class Product {
     @Id
@@ -21,9 +22,9 @@ public class Product {
     private Long id;
     private String nombre;
     private String descripcion;
-    private Integer stock;
+    // private Integer stock;
     private Double precio;    
-    private String imagen_rrl;
-    private Timestamp fechaCreacion;
-    private Boolean estado;
+    private String imagen_url;
+    // private Timestamp fechaCreacion;
+    // private Boolean estado;
 }
