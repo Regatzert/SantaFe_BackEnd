@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,11 +22,16 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "El nombre no puede estar vacío")
     private String nombre;
+
+    @NotBlank(message = "La descripción no puede estar vacía")
     private String descripcion;
-    // private Integer stock;
-    private Double precio;    
-    private String imagen_url;
-    // private Timestamp fechaCreacion;
-    // private Boolean estado;
+
+    @NotNull(message = "El precio no puede ser nulo")
+    private Double precio;
+
+    private String imagenUrl;
+
+    
 }

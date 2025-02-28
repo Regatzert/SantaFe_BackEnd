@@ -51,7 +51,7 @@ public class UserController {
         return userService.findAll(pageable);
     }
 
-    @GetMapping("/id")
+    @GetMapping("{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
         Optional<User> userOptional = userService.findById(id);
         if (userOptional.isPresent()) {

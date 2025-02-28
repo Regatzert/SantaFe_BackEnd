@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(readOnly = true)
     public List<User> findAll() {
-        return (List) this.userRepository.findAll();
+        return this.userRepository.findAll();
     }
 
     @Override

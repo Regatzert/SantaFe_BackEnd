@@ -1,26 +1,18 @@
 package com.SantaFe_BackEnd.services;
 
 import java.util.List;
-
-import org.springframework.stereotype.Service;
-
+import java.util.Optional;
 import com.SantaFe_BackEnd.entities.Product;
-import com.SantaFe_BackEnd.repositories.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-@Service
-public class ProductService {
 
-     private final ProductRepository productRepository;
+public interface ProductService {
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
-    public Product saveProduct(Product product) {
-        return productRepository.save(product);
-    }
-
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
+     List<Product> findAll();
+     Page<Product> findAll(Pageable pageable);
+     Optional<Product> findById(Long id);
+     Product save(Product producto);
+     Optional<Product> update(Product producto, Long id);
+     void deleteById(Long id);
 }

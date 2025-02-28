@@ -1,80 +1,66 @@
-// package com.SantaFe_BackEnd.services;
+package com.SantaFe_BackEnd.services;
 
-// import java.util.List;
-// import java.util.Optional;
+import java.util.List;
+import java.util.Optional;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Service;
-// import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-// import com.SantaFe_BackEnd.entities.Product;
-// import com.SantaFe_BackEnd.repositories.ProductRepository;
+import com.SantaFe_BackEnd.entities.Product;
+import com.SantaFe_BackEnd.repositories.ProductRepository;
 
-// @Service
-// public class ProductServiceImpl implements ProductService{
+@Service
+public class ProductServiceImpl implements ProductService{
+    @Autowired
+    private ProductRepository productoRepository;
 
-//     @Override
-//     public List<Product> findAll() {
-//         // TODO Auto-generated method stub
-//         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
-//     }
+    @Override
+    @Transactional
+    public List<Product> findAll() {
+        return productoRepository.findAll();
+    }
 
-//     @Override
-//     public Optional<Product> findById(Long id) {
-//         // TODO Auto-generated method stub
-//         throw new UnsupportedOperationException("Unimplemented method 'findById'");
-//     }
+    @Override
+    @Transactional
+    public Page<Product> findAll(Pageable pageable) {
+        return productoRepository.findAll(pageable);
+    }
 
-//     @Override
-//     public Product save(Product product) {
-//         // TODO Auto-generated method stub
-//         throw new UnsupportedOperationException("Unimplemented method 'save'");
-//     }
+    @Override
+    @Transactional
+    public Optional<Product> findById(Long id) {
+        return productoRepository.findById(id);
+    }
 
-//     @Override
-//     public void deleteById(Long id) {
-//         // TODO Auto-generated method stub
-//         throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
-//     }
+    @Override
+    @Transactional
+    public Product save(Product producto) {
+        return productoRepository.save(producto);
+    }
 
-//     @Override
-//     public List<Product> findByNameContainingIgnoreCase(String name) {
-//         // TODO Auto-generated method stub
-//         throw new UnsupportedOperationException("Unimplemented method 'findByNameContainingIgnoreCase'");
-//     }
-    
-//     // @Autowired
-//     // ProductRepository productRepository;
+    @Override
+    @Transactional
+    public Optional<Product> update(Product producto, Long id) {
+        Optional<Product> productoOptional = productoRepository.findById(id);
 
-//     // @Override
-//     // @Transactional(readOnly = true)
-//     // public List<Product> findAll() {
-//     //     return (List<Product>) this.productRepository.findAll();
-        
-//     // }
+        if (productoOptional.isPresent()) {
+            Product productoDB = productoOptional.get();
+            productoDB.setNombre(producto.getNombre());
+            productoDB.setDescripcion(producto.getDescripcion());
+            productoDB.setPrecio(producto.getPrecio());
+            productoDB.setImagenUrl(producto.getImagenUrl());
+            return Optional.of(productoRepository.save(productoDB));
+        }
+        return Optional.empty();
+    }
 
-//     // @Override
-//     // @Transactional(readOnly = true)
-//     // public Optional<Product> findById(Long id) {
-//     //     return this.productRepository.findById(id);
-//     // }
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        productoRepository.deleteById(id);
+    }
 
-//     // @Override
-//     // @Transactional
-//     // public Product save(Product product) {
-//     //     return productRepository.save(product);
-//     // }
-
-//     // @Override
-//     // @Transactional
-//     // public void deleteById(Long id) {
-//     //     productRepository.deleteById(id);
-//     // }
-
-//     // @Override
-//     // @Transactional(readOnly = true)
-//     // public List<Product> findByNameContainingIgnoreCase(String name) {
-//     //     return productRepository.findByNameContainingIgnoreCase(name);
-//     // }
-
-// }
+}
