@@ -87,13 +87,15 @@ public class UserServiceImpl implements UserService{
 
     private List<Role> getOptionalRoles(IUser user) {
         List<Role> roles = new ArrayList<>();
-        Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
-        optionalRoleUser.ifPresent(roles::add);
-
-        if(user.isAdmin()){
+    
+        if (user.isAdmin()) {
             Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
             optionalRoleAdmin.ifPresent(roles::add);
+        } else {
+            Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
+            optionalRoleUser.ifPresent(roles::add);
         }
+    
         return roles;
     }
     

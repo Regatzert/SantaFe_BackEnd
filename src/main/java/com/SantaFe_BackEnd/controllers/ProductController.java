@@ -9,10 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.BindingResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import java.util.*;
+import java.nio.file.Path;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
+import java.io.IOException;
+import java.nio.file.Paths;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 @RestController
 @RequestMapping("/api/products")
@@ -21,6 +30,8 @@ public class ProductController {
 
     @Autowired
     private ProductService productoService;
+
+    private static final String UPLOAD_DIR = "uploads/";
 
     @GetMapping
     public List<Product> list() {
@@ -43,12 +54,47 @@ public class ProductController {
         .body(Collections.singletonMap("error", "El producto no se encontro por el id" + id));
     }
 
-    @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody Product producto, BindingResult result) {
-        if (result.hasErrors()) {
-            return validation(result);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> create(
+            @RequestParam("nombre") String nombre,
+            @RequestParam("descripcion") String descripcion,
+            @RequestParam("precio") Double precio,
+            @RequestParam("stock") Integer stock,
+            @RequestParam(value = "imagen", required = false) MultipartFile imagen
+    ) {
+        try {
+            Product producto = new Product();
+            producto.setNombre(nombre);
+            producto.setDescripcion(descripcion);
+            producto.setPrecio(precio);
+            producto.setStock(stock);
+
+            Product savedProduct = productoService.saveWithImage(producto, imagen);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Error al guardar la imagen"));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(productoService.save(producto));
+    }
+
+    @GetMapping("/images/{filename}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get(UPLOAD_DIR).resolve(filename);
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                throw new RuntimeException("No se puede leer la imagen: " + filename);
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                    .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        }
     }
 
     @PutMapping("/{id}")

@@ -31,7 +31,9 @@ public class Product {
     @NotNull(message = "El precio no puede ser nulo")
     private Double precio;
 
-    private String imagenUrl;
+    private Integer stock;
+
+    private String imagen_url;
 
     
 }
