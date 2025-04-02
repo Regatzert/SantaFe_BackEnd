@@ -23,7 +23,9 @@ public class ProductServiceImpl implements ProductService{
     @Autowired
     private ProductRepository productoRepository;
 
-    private static final String UPLOAD_DIR = "../../../../../uploads/";
+    // private static final String UPLOAD_DIR = "../../../../../uploads/";
+    private static final String UPLOAD_DIR = "uploads/";
+
 
     @Override
 @Transactional

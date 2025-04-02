@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import java.util.*;
 import java.nio.file.Path;
 import org.springframework.http.MediaType;
-import org.springframework.http.HttpHeaders;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -31,7 +30,7 @@ public class ProductController {
     @Autowired
     private ProductService productoService;
 
-    private static final String UPLOAD_DIR = "uploads/";
+    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/";
 
     @GetMapping
     public List<Product> list() {
@@ -77,25 +76,24 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/images/{filename}")
+    @GetMapping(value = "/images/{filename}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
             Path filePath = Paths.get(UPLOAD_DIR).resolve(filename);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (!resource.exists() || !resource.isReadable()) {
-                throw new RuntimeException("No se puede leer la imagen: " + filename);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
 
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
                     .body(resource);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody Product producto, BindingResult result, @PathVariable Long id) {
